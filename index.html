@@ -48,8 +48,12 @@
                 let currentValue = document.getElementById('num1').value;
                 if (currentValue === '0' && !isNaN(val)) {
                     document.getElementById('num1').value = val;
-                } else if (['+', '-', '*', '/'].includes(val) && ['+', '-', '*', '/'].includes(currentValue.slice(-1))) {
-                    // do nothing if last character is an operator and new value is also an operator
+                } else if (['+', '-', '*', '/'].includes(val)) {
+                    if (['+', '-', '*', '/'].includes(currentValue.slice(-1))) {
+                        document.getElementById('num1').value = currentValue.slice(0, -1) + val;
+                    } else {
+                        document.getElementById('num1').value += val;
+                    }
                 } else {
                     document.getElementById('num1').value += val;
                 }
