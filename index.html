@@ -48,7 +48,7 @@
             // function to append a newly entered value to the existing string
             function appendValue(val) {
                 let currentValue = document.getElementById('inputString').value;
-                if (currentValue === 'Infinity' || currentValue === '-Infinity' || currentValue === 'NaN') // handles strange result that are submitted as input
+                if (currentValue === 'Infinity' || currentValue === '-Infinity' || currentValue === 'NaN') {// handles strange result that are submitted as input
                     document.getElementById('inputString').value = val;
                 } else if (currentValue === '0' && !isNaN(val)) { // replaces the initial zero the browser displays with new zero
                     document.getElementById('inputString').value = val;
