@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="calculator.png" type="image/x-icon">
+<title>Calculator</title>
+</head>
+    <body>
+        <h2>Calculator</h2>
+        <form id="calculator">
+        <div>
+            <input value="0" id="num1" readonly />
+        </div>
+        <br/>
+        <div>
+            <button type="button" onclick="appendValue('1')">1</button>
+            <button type="button" onclick="appendValue('2')">2</button>
+            <button type="button" onclick="appendValue('3')">3</button>
+            <button type="button" onclick="clearInput()">c</button>
+        </div>
+        <br/>
+        <div>
+            <button type="button" onclick="appendValue('4')">4</button>
+            <button type="button" onclick="appendValue('5')">5</button>
+            <button type="button" onclick="appendValue('6')">6</button>
+            <button type="button" onclick="calculate()">=</button>
+        </div>
+        <br/>
+        <div>
+            <button type="button" onclick="appendValue('7')">7</button>
+            <button type="button" onclick="appendValue('8')">8</button>
+            <button type="button" onclick="appendValue('9')">9</button>
+            <button type="button" onclick="appendValue('/')">/</button>
+        </div>
+        <br/>
+        <div>
+            <button type="button" onclick="appendValue('0')">0</button>
+            <button type="button" onclick="appendValue('+')">+</button>
+            <button type="button" onclick="appendValue('-')">-</button>
+            <button type="button" onclick="appendValue('*')">*</button>
+        </div>
+        </form>
+        <br/>
+        <small><b>P.S:</b> OPERATIONS DON'T FOLLOW <strong>BODMAS</strong></small>
+        <script>
+            function appendValue(val) {
+            let currentValue = document.getElementById('num1').value;
+            if (currentValue === '0' && !isNaN(val)) {
+                document.getElementById('num1').value = val;
+            } else {
+                document.getElementById('num1').value += val;
+            }
+            }
+
+            function clearInput() {
+                document.getElementById('num1').value = '0';
+            }
+
+            function calculate() {
+                const str = document.getElementById('num1').value;
+                if (['+', '-', '*', '/'].includes(str.slice(-1))) {
+                    document.getElementById("num1").value = '0';
+                    return;
+                }
+
+                let so = '';
+                let kso = '';
+                let aim = '';
+                for (let i = 0; i < str.length; i++) {
+                    const char = str[i];
+                    if (['+', '-', '*', '/'].includes(char)) {
+                        if (kso === '') {
+                            if (str[i] === '-' && so === '') {
+                                kso = 0;
+                            } else {
+                                kso = parseFloat(so); // handle first number
+                            }
+                            
+                        } else {
+                        // process previous operation
+                            switch (aim) {
+                            case '+':
+                                kso += parseFloat(so);
+                                break;
+                            case '-':
+                                kso -= parseFloat(so);
+                                break;
+                            case '*':
+                                kso *= parseFloat(so);
+                                break;
+                            case '/':
+                                if (parseFloat(so) === 0) {
+                                    return;
+                                }
+                                kso /= parseFloat(so);
+                                break;
+                            }
+                        }
+                        aim = char;
+                        so = '';
+                    } else {
+                    so += char;
+                    }
+                }
+                // handle last number
+                if (!aim) {
+                    kso = parseFloat(so);
+                } else {
+                // handle the operators
+                    switch (aim) {
+                        case '+':
+                            kso += parseFloat(so);
+                            break;
+                        case '-':
+                            kso -= parseFloat(so);
+                            break;
+                        case '*':
+                            kso *= parseFloat(so);
+                            break;
+                        case '/':
+                            kso /= parseFloat(so);
+                            break;
+                        default:
+                            kso = parseFloat(so);
+                    }
+                }
+                document.getElementById("num1").value = kso;
+            }
+        </script>
+    </body>
+</html>
