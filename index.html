@@ -7,88 +7,96 @@
 <title>Calculator</title>
 </head>
     <body>
+        // heading
         <h2>Calculator</h2>
-            <table>
-                <tr>
-                    <td colspan="4"><input value="0" id="inputString" readonly style="width: 100%; box-sizing: border-box;"/></td>
-                </tr>
-                <tr>
-                    <td><button type="button" onclick="appendValue('7')">7</button></td>
-                    <td><button type="button" onclick="appendValue('8')">8</button></td>
-                    <td><button type="button" onclick="appendValue('9')">9</button></td>
-                    <td><button type="button" onclick="appendValue('/')">/</button></td>
-                </tr>
-                <tr>
-                    <td><button type="button" onclick="appendValue('4')">4</button></td>
-                    <td><button type="button" onclick="appendValue('5')">5</button></td>
-                    <td><button type="button" onclick="appendValue('6')">6</button></td>
-                    <td><button type="button" onclick="appendValue('*')">*</button></td>
-                </tr>
-                <tr>
-                    <td><button type="button" onclick="appendValue('1')">1</button></td>
-                    <td><button type="button" onclick="appendValue('2')">2</button></td>
-                    <td><button type="button" onclick="appendValue('3')">3</button></td>
-                    <td><button type="button" onclick="appendValue('-')">-</button></td>
-                </tr>
-                <tr>
-                    <td><button type="button" onclick="appendValue('0')">0</button></td>
-                    <td><button type="button" onclick="clearInput()">C</button></td>
-                    <td><button type="button" onclick="calculate()">=</button></td>
-                    <td><button type="button" onclick="appendValue('+')">+</button></td>
-                </tr>
-            </table>
+        // the table to keep the calculator in form
+        // couple buttons to give room to use the onclick attribute.
+        <table>
+            <tr>
+                <td colspan="4"><input value="0" id="inputString" readonly style="width: 100%; box-sizing: border-box;"/></td>
+            </tr>
+            <tr>
+                <td><button type="button" onclick="appendValue('7')">7</button></td>
+                <td><button type="button" onclick="appendValue('8')">8</button></td>
+                <td><button type="button" onclick="appendValue('9')">9</button></td>
+                <td><button type="button" onclick="appendValue('/')">/</button></td>
+            </tr>
+            <tr>
+                <td><button type="button" onclick="appendValue('4')">4</button></td>
+                <td><button type="button" onclick="appendValue('5')">5</button></td>
+                <td><button type="button" onclick="appendValue('6')">6</button></td>
+                <td><button type="button" onclick="appendValue('*')">*</button></td>
+            </tr>
+            <tr>
+                <td><button type="button" onclick="appendValue('1')">1</button></td>
+                <td><button type="button" onclick="appendValue('2')">2</button></td>
+                <td><button type="button" onclick="appendValue('3')">3</button></td>
+                <td><button type="button" onclick="appendValue('-')">-</button></td>
+            </tr>
+            <tr>
+                <td><button type="button" onclick="appendValue('0')">0</button></td>
+                <td><button type="button" onclick="clearInput()">C</button></td>
+                <td><button type="button" onclick="calculate()">=</button></td>
+                <td><button type="button" onclick="appendValue('+')">+</button></td>
+            </tr>
+        </table>
         <br/>
+        // info about how the calculator operate.
         <small><b>P.S:</b> OPERATIONS DON'T FOLLOW <strong>BODMAS</strong></small>
-        <!-- rest of the code remains the same -->
+        // the script
         <script>
+            // function to append a newly entered value to the existing string
             function appendValue(val) {
                 let currentValue = document.getElementById('inputString').value;
-                if (currentValue === 'Infinity' || currentValue === '-Infinity' || currentValue === 'NaN') {
+                if (currentValue === 'Infinity' || currentValue === '-Infinity' || currentValue === 'NaN') // handles strange result that are submitted as input
                     document.getElementById('inputString').value = val;
-                } else if (currentValue === '0' && !isNaN(val)) {
+                } else if (currentValue === '0' && !isNaN(val)) { // replaces the initial zero the browser displays with new zero
                     document.getElementById('inputString').value = val;
-                } else if (['+', '-', '*', '/'].includes(val)) {
-                    if (['+', '-', '*', '/'].includes(currentValue.slice(-1))) {
+                } else if (['+', '-', '*', '/'].includes(val)) { // handles where operator is pressed consecutively whether the same or different
+                    if (['+', '-', '*', '/'].includes(currentValue.slice(-1))) { // when consecutive
                         document.getElementById('inputString').value = currentValue.slice(0, -1) + val;
-                    } else {
+                    } else { // when not consecutive
                         document.getElementById('inputString').value += val;
                     }
-                } else {
+                } else { // when the current value is none of infinity, -infinity, NaN.
                     document.getElementById('inputString').value += val;
                 }
             }
 
+            // to clear the display field
             function clearInput() {
                 let currentValue = document.getElementById('inputString').value;
-                if (currentValue === 'Infinity' || currentValue === 'NaN') {
+                if (currentValue === 'Infinity' || currentValue === 'NaN') { // clear when result is strange
                     document.getElementById('inputString').value = '0';
-                } else if (currentValue.length > 1) {
+                } else if (currentValue.length > 1) { // backspace when result is expected
                     document.getElementById('inputString').value = currentValue.slice(0, -1);
-                } else {
+                } else { // display 0 on clearing of the last digit
                     document.getElementById('inputString').value = '0';
                 }
             }
 
+            // perform the claculate function on the input string
             function calculate() {
                 const str = document.getElementById('inputString').value;
+                // handles when the last character of the string is an operator
                 if (['+', '-', '*', '/'].includes(str.slice(-1))) {
                     document.getElementById("inputString").value = '0';
                     return;
                 }
 
-                let so = '';
-                let kso = '';
-                let aim = '';
+                let so = ''; // keep record of the numbers in the string for each iteration so='save one'
+                let kso = ''; // store so, kso='keep save one' to keep the first so and update it after performing the needed operation
+                let aim = ''; // keep record of the operators, for the switch to work on them.
+                // loop the input string to seperate numbers and operators before performing operations on them
                 for (let i = 0; i < str.length; i++) {
                     const char = str[i];
-                    if (['+', '-', '*', '/'].includes(char)) {
+                    if (['+', '-', '*', '/'].includes(char)) { // checks for an operator
                         if (kso === '') {
-                            if (str[i] === '-' && so === '') {
-                                kso = 0;
+                            if (str[i] === '-' && so === '') { // check for negative number at the start of the string so that kso value can be set
+                                kso = 0;                        // since it would have been skipped in this case.
                             } else {
                                 kso = parseFloat(so);
                             }
-                            
                         } else {
                             switch (aim) {
                             case '+':
@@ -114,6 +122,8 @@
                     so += char;
                     }
                 }
+                // handles last number in the string, beacuse the loop will skip operation on
+                // the last number since no operrator follows it.
                 if (aim === '') {
                     kso = parseFloat(so);
                 } else {
@@ -135,6 +145,7 @@
                             break;
                     }
                 }
+                // target the input box to display the final result
                 document.getElementById("inputString").value = kso;
             }
         </script>
