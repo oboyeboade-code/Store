@@ -9,64 +9,72 @@
     <body>
         <h2>Calculator</h2>
         <form id="calculator">
-        <div>
-            <input value="0" id="num1" readonly />
-        </div>
-        <br/>
-        <div>
-            <button type="button" onclick="appendValue('1')">1</button>
-            <button type="button" onclick="appendValue('2')">2</button>
-            <button type="button" onclick="appendValue('3')">3</button>
-            <button type="button" onclick="clearInput()">c</button>
-        </div>
-        <br/>
-        <div>
-            <button type="button" onclick="appendValue('4')">4</button>
-            <button type="button" onclick="appendValue('5')">5</button>
-            <button type="button" onclick="appendValue('6')">6</button>
-            <button type="button" onclick="calculate()">=</button>
-        </div>
-        <br/>
-        <div>
-            <button type="button" onclick="appendValue('7')">7</button>
-            <button type="button" onclick="appendValue('8')">8</button>
-            <button type="button" onclick="appendValue('9')">9</button>
-            <button type="button" onclick="appendValue('/')">/</button>
-        </div>
-        <br/>
-        <div>
-            <button type="button" onclick="appendValue('0')">0</button>
-            <button type="button" onclick="appendValue('+')">+</button>
-            <button type="button" onclick="appendValue('-')">-</button>
-            <button type="button" onclick="appendValue('*')">*</button>
-        </div>
+            <table>
+                <tr>
+                    <td colspan="4"><input value="0" id="inputString" readonly style="width: 100%; box-sizing: border-box;"/></td>
+                </tr>
+                <tr>
+                    <td><button type="button" onclick="appendValue('7')">7</button></td>
+                    <td><button type="button" onclick="appendValue('8')">8</button></td>
+                    <td><button type="button" onclick="appendValue('9')">9</button></td>
+                    <td><button type="button" onclick="appendValue('/')">/</button></td>
+                </tr>
+                <tr>
+                    <td><button type="button" onclick="appendValue('4')">4</button></td>
+                    <td><button type="button" onclick="appendValue('5')">5</button></td>
+                    <td><button type="button" onclick="appendValue('6')">6</button></td>
+                    <td><button type="button" onclick="appendValue('*')">*</button></td>
+                </tr>
+                <tr>
+                    <td><button type="button" onclick="appendValue('1')">1</button></td>
+                    <td><button type="button" onclick="appendValue('2')">2</button></td>
+                    <td><button type="button" onclick="appendValue('3')">3</button></td>
+                    <td><button type="button" onclick="appendValue('-')">-</button></td>
+                </tr>
+                <tr>
+                    <td><button type="button" onclick="appendValue('0')">0</button></td>
+                    <td><button type="button" onclick="clearInput()">C</button></td>
+                    <td><button type="button" onclick="calculate()">=</button></td>
+                    <td><button type="button" onclick="appendValue('+')">+</button></td>
+                </tr>
+            </table>
         </form>
         <br/>
         <small><b>P.S:</b> OPERATIONS DON'T FOLLOW <strong>BODMAS</strong></small>
+        <!-- rest of the code remains the same -->
         <script>
             function appendValue(val) {
-                let currentValue = document.getElementById('num1').value;
-                if (currentValue === '0' && !isNaN(val)) {
-                    document.getElementById('num1').value = val;
+                let currentValue = document.getElementById('inputString').value;
+                if (currentValue === 'Infinity' || currentValue === '-Infinity' || currentValue === 'NaN') {
+                    document.getElementById('inputString').value = val;
+                } else if (currentValue === '0' && !isNaN(val)) {
+                    document.getElementById('inputString').value = val;
                 } else if (['+', '-', '*', '/'].includes(val)) {
                     if (['+', '-', '*', '/'].includes(currentValue.slice(-1))) {
-                        document.getElementById('num1').value = currentValue.slice(0, -1) + val;
+                        document.getElementById('inputString').value = currentValue.slice(0, -1) + val;
                     } else {
-                        document.getElementById('num1').value += val;
+                        document.getElementById('inputString').value += val;
                     }
                 } else {
-                    document.getElementById('num1').value += val;
+                    document.getElementById('inputString').value += val;
                 }
             }
 
             function clearInput() {
-                document.getElementById('num1').value = '0';
+                let currentValue = document.getElementById('inputString').value;
+                if (currentValue === 'Infinity' || currentValue === 'NaN') {
+                    document.getElementById('inputString').value = '0';
+                } else if (currentValue.length > 1) {
+                    document.getElementById('inputString').value = currentValue.slice(0, -1);
+                } else {
+                    document.getElementById('inputString').value = '0';
+                }
             }
 
             function calculate() {
-                const str = document.getElementById('num1').value;
+                const str = document.getElementById('inputString').value;
                 if (['+', '-', '*', '/'].includes(str.slice(-1))) {
-                    document.getElementById("num1").value = '0';
+                    document.getElementById("inputString").value = '0';
                     return;
                 }
 
@@ -80,11 +88,10 @@
                             if (str[i] === '-' && so === '') {
                                 kso = 0;
                             } else {
-                                kso = parseFloat(so); // handle first number
+                                kso = parseFloat(so);
                             }
                             
                         } else {
-                        // process previous operation
                             switch (aim) {
                             case '+':
                                 kso += parseFloat(so);
@@ -96,10 +103,10 @@
                                 kso *= parseFloat(so);
                                 break;
                             case '/':
-                                if (parseFloat(so) === 0) {
-                                    return;
-                                }
                                 kso /= parseFloat(so);
+                                break;
+                            default:
+                                // do nothing
                                 break;
                             }
                         }
@@ -109,11 +116,9 @@
                     so += char;
                     }
                 }
-                // handle last number
-                if (!aim) {
+                if (aim === '') {
                     kso = parseFloat(so);
                 } else {
-                // handle the operators
                     switch (aim) {
                         case '+':
                             kso += parseFloat(so);
@@ -128,10 +133,11 @@
                             kso /= parseFloat(so);
                             break;
                         default:
-                            kso = parseFloat(so);
+                            // do nothing
+                            break;
                     }
                 }
-                document.getElementById("num1").value = kso;
+                document.getElementById("inputString").value = kso;
             }
         </script>
     </body>
